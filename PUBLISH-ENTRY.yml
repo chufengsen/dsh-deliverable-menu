@@ -1,0 +1,23 @@
+# 这个文件就是提 PR 时新增的那一个条目文件。
+# 放到 awesome-dsh-plugin/awesome-dsh-plugin 仓库的：
+#   data/plugins/chufengsen__dsh-deliverable-menu.yml
+# 文件名规则：<GitHub owner>__<仓库名>.yml
+#
+# 其余字段（install / capabilities / stars / downloads / added / page）全部由 CI 生成，不要写。
+
+url: https://github.com/chufengsen/dsh-deliverable-menu
+name: chufengsen/dsh-deliverable-menu
+category: git
+description:
+  en: >-
+    VS Code-style Git panel for DSH: side-by-side diff with intraline highlight, file tree with
+    new file / new folder / rename / delete / run, cross-file search, code navigation with include
+    jump, go-to-definition, hover docs and occurrence highlight, Markdown preview, a side chat that
+    forks the current session with full context, and right-click menus on deliverable cards.
+  zh: >-
+    DSH 的 VS Code 式 Git 面板：并排 diff（行内差异高亮）、文件树（新建文件/文件夹、重命名、删除、运行）、
+    跨文件搜索、代码导航（include 跳转、跳定义、悬停注释、双击整词高亮）、Markdown 渲染预览、
+    继承当前会话完整上下文的侧边会话，以及交付卡片右键菜单。
+npm: dsh-deliverable-menu
+# 若只发 GitHub Release，把上面一行换成：
+# tarball: https://github.com/chufengsen/dsh-deliverable-menu/releases/download/v1.30.0/dsh-deliverable-menu-1.30.0.tgz
