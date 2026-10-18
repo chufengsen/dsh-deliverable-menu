@@ -272,13 +272,28 @@ Git 只操作 cwd 所在仓库；push/pull 需要二次点击确认；路由只�
 
 ## 安装
 
+**A. 从 npm 装（换台电脑最省事，不用 clone 源码）**
+
 ```bash
-node install.mjs              # 复制到 profile 的 node_modules + 写 bundles + 写 dependencies
+curl -L -o install.mjs https://raw.githubusercontent.com/chufengsen/dsh-deliverable-menu/main/install.mjs
+node install.mjs --from-npm            # 装 npm 上的 latest
+node install.mjs --from-npm 1.31.1     # 装指定版本
+```
+
+它会 `npm install` 拉包 → 复制到 profile 的 `node_modules` → 写 `bundles` 与
+`dependencies: "^1.31.1"`（真实 semver，之后 pnpm 能自己解析），实测一次约 3 秒。
+
+**B. 从源码装（改了代码想立刻生效时用）**
+
+```bash
+git clone https://github.com/chufengsen/dsh-deliverable-menu.git
+cd dsh-deliverable-menu && node install.mjs
 node install.mjs --uninstall  # 卸载
 ```
 
 装完**重启 DeepSeek Harness**。改前会备份 `package.json`，可重复执行。
-`dependencies` 里是 `file:` 指向本目录，**别删/别移动**，否则以后 pnpm 解析会失败。
+源码装法会在 `dependencies` 里写 `file:` 指向源码目录，**别删/别移动**；
+npm 装法写的是 `^版本号`，没这个包袱。
 
 ## 性能（实测：为什么之前点一下会卡）
 
