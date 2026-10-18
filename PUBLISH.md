@@ -142,6 +142,18 @@ gh release create v1.30.0 dsh-deliverable-menu-1.30.0.tgz   # 上传为 release 
 | `network` | 否 | 全程本地，只起 127.0.0.1 上的 RPC 端点 |
 | `llm` | 否 | 不调用模型（侧边会话走的是宿主自己的 `session.prompt`） |
 
+## 一键开 PR（预填文件名 + 内容）
+
+在浏览器打开这个链接，GitHub 会让你先 fork，然后**直接跳到新建文件页**，
+文件名和内容都已经填好（内容就是 `PUBLISH-ENTRY.yml`）：
+
+```
+https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/new/main/data/plugins/chufengsen__dsh-deliverable-menu.yml?value=url%3A%20https%3A%2F%2Fgithub.com%2Fchufengsen%2Fdsh-deliverable-menu%0Aname%3A%20chufengsen%2Fdsh-deliverable-menu%0Acategory%3A%20git%0Adescription%3A%0A%20%20en%3A%20%3E-%0A%20%20%20%20VS%20Code-style%20Git%20panel%20for%20DSH%3A%20side-by-side%20diff%2C%20file%20tree%20%28new%2Frename%2Fdelete%2Frun%29%2C%0A%20%20%20%20cross-file%20search%2C%20code%20navigation%20%28include%20jump%2C%20go-to-def%2C%20hover%20docs%2C%20occurrence%0A%20%20%20%20highlight%29%2C%20Markdown%20preview%2C%20a%20side%20chat%20that%20forks%20the%20session%20with%20full%20context%2C%20and%0A%20%20%20%20right-click%20menus%20on%20deliverable%20cards.%0A%20%20zh%3A%20%3E-%0A%20%20%20%20DSH%20%E7%9A%84%20VS%20Code%20%E5%BC%8F%20Git%20%E9%9D%A2%E6%9D%BF%EF%BC%9A%E5%B9%B6%E6%8E%92%20diff%E3%80%81%E6%96%87%E4%BB%B6%E6%A0%91%EF%BC%88%E6%96%B0%E5%BB%BA%2F%E9%87%8D%E5%91%BD%E5%90%8D%2F%E5%88%A0%E9%99%A4%2F%E8%BF%90%E8%A1%8C%EF%BC%89%E3%80%81%E8%B7%A8%E6%96%87%E4%BB%B6%E6%90%9C%E7%B4%A2%E3%80%81%0A%20%20%20%20%E4%BB%A3%E7%A0%81%E5%AF%BC%E8%88%AA%EF%BC%88include%20%E8%B7%B3%E8%BD%AC%2F%E8%B7%B3%E5%AE%9A%E4%B9%89%2F%E6%82%AC%E5%81%9C%E6%B3%A8%E9%87%8A%2F%E5%8F%8C%E5%87%BB%E6%95%B4%E8%AF%8D%E9%AB%98%E4%BA%AE%EF%BC%89%E3%80%81Markdown%20%E6%B8%B2%E6%9F%93%E9%A2%84%E8%A7%88%E3%80%81%0A%20%20%20%20%E7%BB%A7%E6%89%BF%E4%BC%9A%E8%AF%9D%E5%AE%8C%E6%95%B4%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E4%BE%A7%E8%BE%B9%E4%BC%9A%E8%AF%9D%E3%80%81%E4%BA%A4%E4%BB%98%E5%8D%A1%E7%89%87%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95%E3%80%82%0Anpm%3A%20dsh-deliverable-menu%0A
+```
+
+点 **Commit changes** → **Contribute → Open pull request**，PR 描述随便写一句
+「add dsh-deliverable-menu」即可。
+
 ## 第 4 步：验证收录
 
 ```bash
