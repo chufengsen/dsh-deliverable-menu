@@ -59,6 +59,28 @@ npm login
 npm publish --access public
 ```
 
+### 账号开了两步验证（2FA）时必然遇到的 403
+
+```
+npm error code E403
+npm error 403 Forbidden - PUT https://registry.npmjs.org/<包名>
+npm error Two-factor authentication or granular access token with bypass 2fa enabled is required to publish packages.
+```
+
+`npm login` 拿到的 token **不能绕过 2FA 发布**（npm 2024 起收紧）。两种解法：
+
+```bash
+# A. 用一次性动态码（30 秒有效，发布前现取）
+OTP=123456 bash release.sh
+
+# B. 生成"可绕过 2FA"的 granular token，用它发布
+#    npmjs.com → Access Tokens → Generate New Token → Granular Access Token
+#    勾上 Read and write + Bypass two-factor authentication
+npm publish --access public --//registry.npmjs.org/:_authToken=<TOKEN>
+```
+
+> 用 B 之后建议把 token 撤销（Access Tokens 页面 → Delete），别留在 shell 历史里。
+
 发布前建议补三个字段（npm 不强制，但市场页面/仓库链接会好看很多）：
 
 ```json
