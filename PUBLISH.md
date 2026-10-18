@@ -37,6 +37,13 @@ https://awesome-dsh-plugin.com/plugins.json   ← dshmarket 每次打开都实�
 
 ---
 
+## 第 0 步：仓库必须公开
+
+`awesome-dsh-plugin` 的 CI 要抓你仓库的 README / stars / 提交记录来生成条目，
+**私有仓库抓不到**（匿名访问 GitHub 私有仓库一律 404，看起来就像"仓库不存在"）。
+
+改成公开：仓库页 → **Settings → General → 拉到最下面 Danger Zone → Change visibility → Public**。
+
 ## 第 1 步：发布到 npm
 
 ```bash
