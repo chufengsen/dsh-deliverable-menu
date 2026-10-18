@@ -1,0 +1,11 @@
+# dsh-deliverable-menu bundle patch
+#
+# 装入 profile 后，本文件把插件行插进 Cordis 组合树：
+#   - id   : 插件在组合树里的唯一标识（改名会导致重复挂载）
+#   - name : npm 包名，由 profile 的 node_modules 解析
+#
+# 节点半边（lib/index.js）不做任何事；真正的功能在浏览器半边（lib/client.js），
+# 它往 deliverables.file.actions 槽里注册一个「更多操作」按钮 + 卡片右键菜单。
+- insert:
+    - id: deliverable-menu
+      name: 'dsh-deliverable-menu'

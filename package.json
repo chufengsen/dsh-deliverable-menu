@@ -1,0 +1,54 @@
+{
+  "name": "dsh-deliverable-menu",
+  "version": "1.30.0",
+  "description": "DSH 增强：VS Code 式 Git/并排 diff、文件树与新建/右键菜单/运行、跨文件搜索、代码导航（include 跳转/跳定义/悬停注释/联想）、侧边会话（fork 继承上下文）、交付卡片右键",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "deliverables",
+    "present",
+    "context-menu"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web"
+    }
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "PUBLISH.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chufengsen/dsh-deliverable-menu.git"
+  },
+  "homepage": "https://github.com/chufengsen/dsh-deliverable-menu#readme",
+  "bugs": {
+    "url": "https://github.com/chufengsen/dsh-deliverable-menu/issues"
+  },
+  "author": "chufengsen"
+}
