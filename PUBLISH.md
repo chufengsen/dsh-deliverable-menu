@@ -1,5 +1,8 @@
 # 发布到 DSH 插件市场
 
+> 仓库：https://github.com/chufengsen/dsh-deliverable-menu
+> 本地已 `git init` + 提交 + 配好 `origin`（只需 `git push -u origin main`）。
+>
 > 本文的每一条都来自实查：市场应用 `dshmarket@1.66.32` 的 README、它的数据源，
 > 以及 `https://awesome-dsh-plugin.com/plugins.json` 的真实条目结构。
 
@@ -52,8 +55,8 @@ npm publish --access public
 发布前建议补三个字段（npm 不强制，但市场页面/仓库链接会好看很多）：
 
 ```json
-"repository": { "type": "git", "url": "git+https://github.com/<你>/<仓库>.git" },
-"homepage": "https://github.com/<你>/<仓库>#readme",
+"repository": { "type": "git", "url": "git+https://github.com/chufengsen/dsh-deliverable-menu.git" },
+"homepage": "https://github.com/chufengsen/dsh-deliverable-menu#readme",
 "publishConfig": { "access": "public" }
 ```
 
@@ -81,20 +84,20 @@ gh release create v1.30.0 dsh-deliverable-menu-1.30.0.tgz   # 上传为 release 
 ```jsonc
 {
   "name": "dsh-deliverable-menu",
-  "owner": "<你的 GitHub 用户名>",
-  "url": "https://github.com/<你>/<仓库>",
+  "owner": "chufengsen",
+  "url": "https://github.com/chufengsen/dsh-deliverable-menu",
   "category": "<按仓库 README 的分类表挑一个，如 ui / devtools>",
   "description": {
     "en": "VS Code-style Git panel with side-by-side diff, file tree (new/rename/delete/run), cross-file search, code navigation (include jump, go-to-def, hover docs), side chat that forks the session, and right-click on deliverable cards.",
     "zh": "VS Code 式 Git 面板（并排 diff）、文件树（新建/重命名/删除/运行）、跨文件搜索、代码导航（include 跳转/跳定义/悬停注释）、《继承会话上下文的侧边会话》、交付卡片右键菜单。"
   },
-  "npm": "dsh-deliverable-menu",
-  "screenshots": ["https://raw.githubusercontent.com/<你>/<仓库>/main/shots/panel.png"]
+  "npm": "dsh-deliverable-menu"
+  // 想带图再加： "screenshots": ["https://raw.githubusercontent.com/chufengsen/dsh-deliverable-menu/main/shots/panel.png"]
 }
 ```
 
 - 只发 GitHub Release 的话，把 `"npm"` 换成
-  `"tarball": "https://github.com/<你>/<仓库>/releases/download/v1.30.0/dsh-deliverable-menu-1.30.0.tgz"`。
+  `"tarball": "https://github.com/chufengsen/dsh-deliverable-menu/releases/download/v1.30.0/dsh-deliverable-menu-1.30.0.tgz"`。
 - `capabilities` / `capabilityRedLines` / `install` / `stars` / `downloads` 这些**不用你写**，
   是 CI 扫描 + 生成出来的（`capabilityCheckedAt` 就是扫描时间戳）。
 - 截图：可选。想显示的话，在**你自己仓库**的 `package.json` 旁放 `screenshots.json`
