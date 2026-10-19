@@ -578,6 +578,34 @@ assert.deepEqual(
 assert.deepEqual(ctxOf({}), { sessionId: '', cwd: '' }, '都没有时返回空串（不抛错）')
 console.log('[ok] turnTail 上下文：scope → props → turn 三级回退')
 
+// 产物 vs 改动：打包出来的 exe/zip 要单独成组
+const art = globalThis.window.__dshDeliverableMenu.isArtifactFile
+assert.equal(art('dist/ScannerOTA.exe'), true, 'dist 下的 exe 是产物')
+assert.equal(art('ScannerOTA.exe'), true, '裸 exe 也是产物')
+assert.equal(art('release/app.zip'), true, 'zip 是产物')
+assert.equal(art('cli_launcher.py'), false, '源码不算产物')
+assert.equal(art('CLI.md'), false, '文档不算产物')
+assert.equal(art(''), false, '空路径不算')
+
+const split = globalThis.window.__dshDeliverableMenu.splitTailFiles
+const grouped = split(
+  [
+    { path: 'dist/ScannerOTA.exe', status: '?' },
+    { path: 'cli_launcher.py', status: 'M' },
+    { path: 'CLI.md', status: 'M' },
+    { path: 'build/app.zip', status: '?' },
+    { path: 'src/main.c', status: 'M' },
+  ],
+  4,
+)
+assert.deepEqual(grouped.artifacts.map((x) => x.path), ['build/app.zip', 'dist/ScannerOTA.exe'], '产物组')
+assert.deepEqual(grouped.edits.map((x) => x.path), ['cli_launcher.py', 'CLI.md', 'src/main.c'], '改动组（zh 排序：_ 在 . 之前）')
+assert.equal(grouped.total, 5, '总数是全部改动')
+
+const limited = split([{ path: 'a.exe' }, { path: 'b.exe' }, { path: 'c.exe' }], 2)
+assert.equal(limited.artifacts.length, 2, '产物组也遵守 limit')
+console.log('[ok] 回合结尾：产物/改动分组（exe、zip、dist/ 归产物）')
+
 // 结构自检（排查用）仍然可用
 const report = themer.inspectChatDom()
 assert.ok(typeof report === 'string' && report.includes('# 对话行'), '自检返回可读报告')
