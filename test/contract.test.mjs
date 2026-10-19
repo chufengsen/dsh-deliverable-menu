@@ -566,6 +566,18 @@ assert.deepEqual(tail([], 4), [], '空列表返回空')
 assert.deepEqual(tail(null, 4), [], 'null 也不炸')
 console.log('[ok] 回合结尾卡片：过滤目录 + 排序 + 截断 4 张')
 
+// turnTail 上下文解析：scope 优先，其次 props / turn
+const ctxOf = globalThis.window.__dshDeliverableMenu.resolveTailContext
+assert.deepEqual(ctxOf({ scope: { sessionId: 's1', cwd: '/w' } }), { sessionId: 's1', cwd: '/w' })
+assert.deepEqual(ctxOf({ sessionId: 's2' }), { sessionId: 's2', cwd: '' }, '顶层 sessionId 兜底')
+assert.deepEqual(
+  ctxOf({ turn: { sessionId: 's3', cwd: '/p' } }),
+  { sessionId: 's3', cwd: '/p' },
+  'turn 里也认',
+)
+assert.deepEqual(ctxOf({}), { sessionId: '', cwd: '' }, '都没有时返回空串（不抛错）')
+console.log('[ok] turnTail 上下文：scope → props → turn 三级回退')
+
 // 结构自检（排查用）仍然可用
 const report = themer.inspectChatDom()
 assert.ok(typeof report === 'string' && report.includes('# 对话行'), '自检返回可读报告')
