@@ -1,6 +1,6 @@
 {
   "name": "dsh-deliverable-menu",
-  "version": "1.37.0",
+  "version": "1.38.0",
   "description": "DSH 增强：VS Code 式 Git/并排 diff、文件树与新建/右键菜单/运行、跨文件搜索、代码导航（include 跳转/跳定义/悬停注释/联想）、侧边会话（fork 继承上下文）、交付卡片右键",
   "type": "module",
   "main": "lib/index.js",

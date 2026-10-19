@@ -633,6 +633,20 @@ assert.equal(merged.total, 3, 'total 只数 git 里的有效条目（目录不�
 assert.equal(merged.artifacts[0].size, 123, '最近产物带 size')
 console.log('[ok] 回合结尾分组：最近产物 + git 改动 合并去重')
 
+// 长文本折叠：字符数与高度双阈值
+const fold = globalThis.window.__dshDeliverableMenu.shouldFoldLongText
+assert.equal(fold(3000, 900), true, '又长又高 → 折叠')
+assert.equal(fold(3000, 200), false, '长但不占屏 → 不折')
+assert.equal(fold(300, 1200), false, '高但很短 → 不折')
+assert.equal(fold(1200, 421), true, '刚好过阈值 → 折')
+
+const label = globalThis.window.__dshDeliverableMenu.longTextLabel
+assert.equal(label(12345), '长文本 · 1.2 万字符')
+assert.equal(label(10000), '长文本 · 1 万字符')
+assert.equal(label(3400), '长文本 · 3.4 千字符')
+assert.equal(label(800), '长文本 · 800 字符')
+console.log('[ok] 长文本折叠：双阈值判定 + 万/千字符标签')
+
 // 结构自检（排查用）仍然可用
 const report = themer.inspectChatDom()
 assert.ok(typeof report === 'string' && report.includes('# 对话行'), '自检返回可读报告')
