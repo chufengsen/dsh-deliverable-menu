@@ -658,6 +658,13 @@ assert.equal(
 )
 console.log('[ok] 提示音：ask/done 两个地址 + 无 document 时不补提醒')
 
+// 提示音：playCue 在没有 Audio 的环境下要"安静失败"，不能抛
+const cuePlay = globalThis.window.__dshDeliverableMenu.playCue
+const cueRes = await cuePlay('ask')
+assert.equal(cueRes.ok, false)
+assert.equal(cueRes.error, 'no-audio')
+console.log('[ok] 提示音：无 Audio 环境静默失败（返回 {ok:false}）')
+
 // 结构自检（排查用）仍然可用
 const report = themer.inspectChatDom()
 assert.ok(typeof report === 'string' && report.includes('# 对话行'), '自检返回可读报告')
