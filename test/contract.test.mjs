@@ -149,12 +149,18 @@ mod.apply(ctx)
 const injectCall = registered.find((r) => r.name === 'deliverables.file.actions')
 assert.ok(injectCall, '必须 inject 到 deliverables.file.actions')
 
-const reg = registered.find((r) => r.descriptor)
+const reg = registered.find((r) => r.descriptor && r.descriptor.name === 'deliverables.file.actions')
 assert.ok(reg, '必须调用 slots.register')
 assert.equal(reg.descriptor.name, 'deliverables.file.actions', '注册的槽名正确')
 assert.equal(reg.descriptor.id, 'deliverable-menu', '注册 id 稳定（用于去重/卸载）')
 assert.equal(typeof reg.component, 'function', '组件是函数组件')
-console.log('[ok] 槽位注册：deliverables.file.actions ← deliverable-menu')
+const tailReg = registered.find(
+  (r) => r.descriptor && r.descriptor.name === 'conversation.chat.turnTail',
+)
+assert.ok(tailReg, '同时注册了回合结尾槽位 conversation.chat.turnTail')
+assert.equal(tailReg.component, globalThis.window.__dshDeliverableMenu ? tailReg.component : null)
+assert.equal(typeof tailReg.component, 'function', '回合结尾组件是函数组件')
+console.log('[ok] 槽位注册：deliverables.file.actions + conversation.chat.turnTail')
 
 // ---------------------------------------------------------------- 组件渲染
 
@@ -540,6 +546,25 @@ assert.deepEqual(chip({ type: 'file', name: 'dy_mqtt.c' }), { kind: 'code', labe
 assert.deepEqual(chip({ type: 'file', name: 'package.json' }), { kind: 'json', label: 'JSON' })
 assert.deepEqual(chip({ type: 'file', name: 'LICENSE' }), { kind: 'file', label: 'F' }, '无扩展名兜底')
 console.log('[ok] 文件卡片：KB/MB 格式化 + 按扩展名分类（md/exe/code/json/dir）')
+
+// 回合结尾卡片：从 git 状态挑"本轮改动"
+const tail = globalThis.window.__dshDeliverableMenu.tailChangedFiles
+const tailFiles = [
+  { path: 'z.md', status: 'M' },
+  { path: 'a/big.exe', status: '?' },
+  { path: 'build/', status: '?', untrackedDir: true },
+  { path: 'a.md', status: 'A' },
+  { path: 'b.txt', status: 'M' },
+  { path: 'y.md', status: 'M' },
+]
+const picked = tail(tailFiles, 4)
+assert.equal(picked.length, 4, '最多 4 张卡')
+assert.deepEqual(picked.map((x) => x.path), ['a.md', 'a/big.exe', 'b.txt', 'y.md'], '按路径排序 + 截断')
+assert.deepEqual(picked[0], { path: 'a.md', name: 'a.md', status: 'A' }, '带出文件名与状态')
+assert.ok(!picked.some((x) => x.path.endsWith('/')), '目录条目被排除')
+assert.deepEqual(tail([], 4), [], '空列表返回空')
+assert.deepEqual(tail(null, 4), [], 'null 也不炸')
+console.log('[ok] 回合结尾卡片：过滤目录 + 排序 + 截断 4 张')
 
 // 结构自检（排查用）仍然可用
 const report = themer.inspectChatDom()
