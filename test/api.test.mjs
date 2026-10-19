@@ -57,8 +57,10 @@ const ctx = {
   },
 }
 plugin.apply(ctx)
-assert.equal(routes.length, 1, '应注册一条路由')
-const route = routes[0]
+assert.equal(routes.length, 2, '应注册两条路由（资源 + API）')
+const assetRoute = routes.find((r) => r.path.endsWith('/assets'))
+assert.ok(assetRoute, '注册了资源路由')
+const route = routes.find((r) => r.path.endsWith('/api'))
 assert.equal(route.kind, 'prefix')
 assert.equal(route.path, '/dsh-deliverable-menu/api')
 ok('插件形状与路由注册')
@@ -359,6 +361,66 @@ ok('双击语义：launch 用 start 启动，程序真的跑了')
 const launchBad = await call({ method: 'launch', sessionId: 's1', path: 'lib.h' })
 assert.equal(launchBad.status, 400, '头文件不允许 launch')
 ok('双击语义：不支持的类型拒绝（400）')
+
+// ---------------------------------------------------------------- 提示音资源
+
+function getAsset(pathname, opts = {}) {
+  const req = {
+    method: opts.method || 'GET',
+    url: `/dsh-deliverable-menu/assets${pathname}`,
+    headers: { host: opts.host || '127.0.0.1:3456' },
+  }
+  const state = { status: 0, headers: {}, chunks: [] }
+  const res = {
+    headersSent: false,
+    writeHead(status, headers) {
+      state.status = status
+      state.headers = headers || {}
+      this.headersSent = true
+    },
+    write(chunk) {
+      state.chunks.push(Buffer.from(chunk))
+      return true
+    },
+    end(chunk) {
+      if (chunk !== undefined) state.chunks.push(Buffer.from(chunk))
+    },
+  }
+  return assetRoute.handler(req, res).then(
+    () =>
+      new Promise((resolve) => {
+        // createReadStream 是异步 pipe，等一拍再收尾
+        setTimeout(
+          () =>
+            resolve({
+              status: state.status,
+              headers: state.headers,
+              length: state.chunks.reduce((n, b) => n + b.length, 0),
+            }),
+          80,
+        )
+      }),
+  )
+}
+
+const wav = await getAsset('/cue-ask.wav')
+assert.equal(wav.status, 200, '提示音 GET 200')
+assert.equal(wav.headers['content-type'], 'audio/wav', 'Content-Type 是 audio/wav')
+assert.ok(wav.length > 100000, `返回真实音频字节（${wav.length}）`)
+ok('提示音资源：cue-ask.wav 能取到（audio/wav）')
+
+const wavDone = await getAsset('/cue-done.wav')
+assert.equal(wavDone.status, 200, 'cue-done.wav 也能取到')
+assert.ok(wavDone.length > 100000, '内容非空')
+ok('提示音资源：cue-done.wav 能取到')
+
+const missing = await getAsset('/nope.wav')
+assert.equal(missing.status, 404, '白名单外返回 404')
+const traversal = await getAsset('/../package.json')
+assert.equal(traversal.status, 404, '路径穿越被白名单挡住')
+const wrongMethod = await getAsset('/cue-ask.wav', { method: 'POST' })
+assert.equal(wrongMethod.status, 405, '非 GET 返回 405')
+ok('提示音资源：白名单 / 穿越 / 方法校验')
 
 // ---------------------------------------------------------------- 最近产物扫描
 

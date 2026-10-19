@@ -647,6 +647,17 @@ assert.equal(label(3400), '长文本 · 3.4 千字符')
 assert.equal(label(800), '长文本 · 800 字符')
 console.log('[ok] 长文本折叠：双阈值判定 + 万/千字符标签')
 
+// 提示音：地址走节点端 GET 路由
+const cues = globalThis.window.__dshDeliverableMenu.CUE_URL
+assert.equal(cues.ask, '/dsh-deliverable-menu/assets/cue-ask.wav')
+assert.equal(cues.done, '/dsh-deliverable-menu/assets/cue-done.wav')
+assert.equal(
+  globalThis.window.__dshDeliverableMenu.isWindowUnfocused(),
+  false,
+  '没有 document 时按"聚焦"处理（不补提醒）',
+)
+console.log('[ok] 提示音：ask/done 两个地址 + 无 document 时不补提醒')
+
 // 结构自检（排查用）仍然可用
 const report = themer.inspectChatDom()
 assert.ok(typeof report === 'string' && report.includes('# 对话行'), '自检返回可读报告')
