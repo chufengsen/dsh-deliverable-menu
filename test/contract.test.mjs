@@ -606,6 +606,33 @@ const limited = split([{ path: 'a.exe' }, { path: 'b.exe' }, { path: 'c.exe' }],
 assert.equal(limited.artifacts.length, 2, '产物组也遵守 limit')
 console.log('[ok] 回合结尾：产物/改动分组（exe、zip、dist/ 归产物）')
 
+// 合并两个数据源：最近扫描到的产物 + git 改动（同路径只出现一次）
+const mergeGroups = globalThis.window.__dshDeliverableMenu.buildTailGroups
+const merged = mergeGroups(
+  {
+    recentFiles: [
+      { path: 'dist/ScannerOTA.exe', name: 'ScannerOTA.exe', size: 123 },
+      { path: 'dist/app.zip', name: 'app.zip', size: 456 },
+    ],
+    gitFiles: [
+      { path: 'dist/ScannerOTA.exe', status: '?' },
+      { path: 'src/main.c', status: 'M' },
+      { path: 'build/old.dll', status: '?' },
+      { path: 'dist/', status: '?', untrackedDir: true },
+    ],
+  },
+  4,
+)
+assert.deepEqual(
+  merged.artifacts.map((x) => x.path),
+  ['dist/ScannerOTA.exe', 'dist/app.zip', 'build/old.dll'],
+  '产物 = 最近扫描优先 + git 里的产物，且同路径去重',
+)
+assert.deepEqual(merged.edits.map((x) => x.path), ['src/main.c'], '源码进改动组')
+assert.equal(merged.total, 3, 'total 只数 git 里的有效条目（目录不算）')
+assert.equal(merged.artifacts[0].size, 123, '最近产物带 size')
+console.log('[ok] 回合结尾分组：最近产物 + git 改动 合并去重')
+
 // 结构自检（排查用）仍然可用
 const report = themer.inspectChatDom()
 assert.ok(typeof report === 'string' && report.includes('# 对话行'), '自检返回可读报告')

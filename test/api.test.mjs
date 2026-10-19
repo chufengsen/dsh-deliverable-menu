@@ -360,6 +360,31 @@ const launchBad = await call({ method: 'launch', sessionId: 's1', path: 'lib.h' 
 assert.equal(launchBad.status, 400, '头文件不允许 launch')
 ok('双击语义：不支持的类型拒绝（400）')
 
+// ---------------------------------------------------------------- 最近产物扫描
+
+await mkdir(join(root, 'dist'), { recursive: true })
+const freshExe = join(root, 'dist', 'ScannerOTA.exe')
+await writeFile(freshExe, Buffer.from('MZ' + '0'.repeat(64)), 'binary')
+const oldBin = join(root, 'dist', 'old.bin')
+await writeFile(oldBin, Buffer.from('OLD'), 'binary')
+const { utimes } = await import('node:fs/promises')
+const past = new Date(Date.now() - 3 * 3600 * 1000)
+await utimes(oldBin, past, past)
+
+const artNow = await call({ method: 'artifacts', sessionId: 's1', sinceMs: Date.now() - 60 * 1000 })
+assert.equal(artNow.status, 200)
+const artPaths = artNow.data.files.map((f) => f.path)
+assert.ok(artPaths.includes('dist/ScannerOTA.exe'), '刚产出的 exe 被扫到')
+assert.ok(!artPaths.includes('dist/old.bin'), 'mtime 太老的产物被过滤')
+assert.equal(artNow.data.files[0].path, 'dist/ScannerOTA.exe', '按 mtime 降序，最新的排最前')
+assert.ok(artNow.data.files[0].size > 0, '带出文件大小')
+ok('最近产物扫描：mtime 过滤 + 按时间倒序 + 带 size')
+
+const artAll = await call({ method: 'artifacts', sessionId: 's1', sinceMs: 1 })
+assert.ok(artAll.data.files.some((f) => f.path === 'dist/old.bin'), 'sinceMs 放宽后老产物也能出现')
+assert.equal(artAll.data.files.length >= 2, true, '至少两个产物')
+ok('最近产物扫描：sinceMs 生效')
+
 // ---------------------------------------------------------------- 清理
 
 // launch 出来的进程可能短暂占着目录句柄（cwd 就是被测目录），重试几次
