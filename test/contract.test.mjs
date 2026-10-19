@@ -523,6 +523,24 @@ const kinds = inline.filter((x) => x && x.type).map((x) => x.type)
 assert.deepEqual(kinds, ['strong', 'code', 'del', 'a'], '行内格式齐全')
 console.log('[ok] Markdown：标题/段落/列表/代码块/表格/引用 + 行内格式')
 
+// 文件卡片：大小格式化 + 类型色块
+const fmt = globalThis.window.__dshDeliverableMenu.formatBytes
+assert.equal(fmt(0), '0 B')
+assert.equal(fmt(512), '512 B')
+assert.equal(fmt(1024), '1 KB')
+assert.equal(fmt(14643), '14.3 KB', '14.3 KB（小于 10 保留一位小数）')
+assert.equal(fmt(10171187), '9.7 MB')
+assert.equal(fmt(1048576), '1 MB')
+
+const chip = globalThis.window.__dshDeliverableMenu.fileChipMeta
+assert.deepEqual(chip({ type: 'dir', name: 'src' }), { kind: 'dir', label: '' }, '目录用文件夹图标')
+assert.deepEqual(chip({ type: 'file', name: 'wifi-config-design.md' }), { kind: 'md', label: 'MD' })
+assert.deepEqual(chip({ type: 'file', name: 'ScannerOTA.exe' }), { kind: 'exe', label: 'EXE' })
+assert.deepEqual(chip({ type: 'file', name: 'dy_mqtt.c' }), { kind: 'code', label: 'C' })
+assert.deepEqual(chip({ type: 'file', name: 'package.json' }), { kind: 'json', label: 'JSON' })
+assert.deepEqual(chip({ type: 'file', name: 'LICENSE' }), { kind: 'file', label: 'F' }, '无扩展名兜底')
+console.log('[ok] 文件卡片：KB/MB 格式化 + 按扩展名分类（md/exe/code/json/dir）')
+
 // 结构自检（排查用）仍然可用
 const report = themer.inspectChatDom()
 assert.ok(typeof report === 'string' && report.includes('# 对话行'), '自检返回可读报告')
