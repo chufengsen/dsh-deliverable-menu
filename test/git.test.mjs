@@ -52,7 +52,10 @@ const ctx = {
   effect: (fn) => fn(),
 }
 plugin.apply(ctx)
-const route = routes[0]
+// apply() 先注册音频资产路由（/assets，只 GET），再注册 API 路由（/api）。
+// 按 URL 取，不按顺序取——否则 POST 会撞上资产路由的 405。
+const route = routes.find((r) => String(r.path || '').endsWith('/api'))
+assert.ok(route, '找到 API 路由')
 
 function call(body) {
   const payload = Buffer.from(JSON.stringify(body))
@@ -188,7 +191,8 @@ ctx2.webServer.register = (r) => {
   return () => {}
 }
 plugin.apply(ctx2)
-const route2 = routes2[0]
+const route2 = routes2.find((r) => String(r.path || '').endsWith('/api'))
+assert.ok(route2, '找到 API 路由（第二轮挂载）')
 const res2 = await (async () => {
   const req = {
     method: 'POST',
